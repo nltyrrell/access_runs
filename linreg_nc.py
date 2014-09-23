@@ -103,6 +103,7 @@ rh_weights = rh_uptrop.collapsed('air_pressure',
                            weights=br_weight)
 RH_tropo = rh_weights
 
+precip   = iris.load_cube(ncfile_path + 'precip.4ysl.ym.nc')
 
 linregcube(T_sfc,T_tropo,'T_sfc','T_tropo')
 linregcube(T_sfc,RH_sfc,'T_sfc','RH_sfc')
