@@ -61,7 +61,7 @@ t_weights = temp_uptrop.collapsed('air_pressure',
                            iris.analysis.MEAN,
                            weights=bweight)
 
-linreg_map = np.zeros(temp_mean.shape)
+linreg_tstt = np.zeros(temp_mean.shape)
 linreg_tsrh = np.zeros(temp_mean.shape)
 linreg_ttrh = np.zeros(temp_mean.shape)
 
