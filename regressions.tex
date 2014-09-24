@@ -1,0 +1,44 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{epstopdf}
+
+\graphicspath{{./figures/}{../plot_twod/figures/}}
+
+\newcommand{\epsfig}[2][0.5]{\includegraphics[width=#1\textwidth]{{#2}.eps}}
+\newcommand{\pngfig}[2][0.5]{\includegraphics[width=#1\textwidth]{{#2}.png}}
+
+
+
+\begin{document}
+\section{}
+
+\pngfig[0.5]{phi_trop_4ysl}
+\pngfig[0.5]{phi_rcm_4ysl}
+
+\subsection{Surface - Troposphere}
+\pngfig[0.5]{reg_T_sfc_T_tropo}
+\pngfig[0.5]{reg_T_sfc_RH_tropo}
+\pngfig[0.5]{cor_T_sfc_T_tropo}
+\pngfig[0.5]{cor_T_sfc_RH_tropo}
+\subsection{Surface - RH,precip}
+\pngfig[0.5]{reg_T_sfc_RH_sfc}
+\pngfig[0.5]{reg_T_sfc_Precip}
+\pngfig[0.5]{cor_T_sfc_RH_sfc}
+\pngfig[0.5]{cor_T_sfc_Precip}
+\subsection{Surface - Cloud}
+\pngfig[0.5]{reg_T_sfc_Cld_High}
+\pngfig[0.5]{reg_T_sfc_Cld_Low}
+\pngfig[0.5]{cor_T_sfc_Cld_High}
+\pngfig[0.5]{cor_T_sfc_Cld_Low}
+\subsection{Troposphere - RH}
+\pngfig[0.5]{reg_T_tropo_RH_sfc}
+\pngfig[0.5]{reg_T_tropo_RH_tropo}
+\pngfig[0.5]{cor_T_tropo_RH_sfc}
+\pngfig[0.5]{cor_T_tropo_RH_tropo}
+
+
+
+\end{document}
+
