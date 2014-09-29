@@ -95,92 +95,60 @@ Tplv_SthAm_armean = Tplv_SthAm.collapsed(['latitude', 'longitude'],
                            iris.analysis.MEAN,
                            weights=grid_areas_SthAm)
 
-NthAfr = iris.Constraint(longitude=lambda l: (0 <= l <= 25), latitude = lambda l: (10 <= l <= 30))
-Tplv_NthAfr = temp_plv_anom.extract(NthAfr)
-grid_areas_NthAfr = iris.analysis.cartography.area_weights(Tplv_NthAfr)
-
-Tplv_NthAfr_armean = Tplv_NthAfr.collapsed(['latitude', 'longitude'],
-                           iris.analysis.MEAN,
-                           weights=grid_areas_NthAfr)
-
-CntAfr = iris.Constraint(longitude=lambda l: (12 <= l <= 40), latitude = lambda l: (-15 <= l <= 5))
-Tplv_CntAfr = temp_plv_anom.extract(CntAfr)
-grid_areas_CntAfr = iris.analysis.cartography.area_weights(Tplv_CntAfr)
-
-Tplv_CntAfr_armean = Tplv_CntAfr.collapsed(['latitude', 'longitude'],
-                           iris.analysis.MEAN,
-                           weights=grid_areas_CntAfr)
-
-Aus = iris.Constraint(longitude=lambda l: (120 <= l <= 140), latitude = lambda l: (-30 <= l <= -17))
-Tplv_Aus = temp_plv_anom.extract(Aus)
-grid_areas_Aus = iris.analysis.cartography.area_weights(Tplv_Aus)
-
-Tplv_Aus_armean = Tplv_Aus.collapsed(['latitude', 'longitude'],
-                           iris.analysis.MEAN,
-                           weights=grid_areas_Aus)
 
 hold = {}
 # temp[height (100), evfr (4), ssts (11), l/o col (0-Oc,1-Ln)
 # col which is used for regresion, '0' for ocean, '1' for land
 lo_col = 0
-
-NthAfrhold = np.zeros((2,temp_plv.coord('air_pressure').shape[0]))
-CntAfrhold = np.zeros((2,temp_plv.coord('air_pressure').shape[0]))
-SthAmhold = np.zeros((2,temp_plv.coord('air_pressure').shape[0]))
-Aushold = np.zeros((2,temp_plv.coord('air_pressure').shape[0]))
+n_bands = 20
+reghold = np.zeros((2,n_bands,temp_plv.coord('air_pressure').shape[0]))
 TrTochold = np.zeros(temp_plv.coord('air_pressure').shape[0])
-
-for np, p in enumerate(temp_plv.coord('air_pressure')):
-
-        Tplv = Tocean_trop_mean.extract(iris.Constraint(air_pressure=p.points[0])).data
-        TOsfc = Tocean_trop_mean.extract(iris.Constraint(air_pressure=1000)).data
-        linreg_ln = stats.linregress(TOsfc,Tplv)
-        TrTochold[np] = linreg_ln[0]
-
-        Tplv = Tplv_SthAm_armean.extract(iris.Constraint(air_pressure=p.points[0])).data
-        Tsfc = Tplv_SthAm_armean.extract(iris.Constraint(air_pressure=1000)).data
-        TOsfc = Tocean_trop_mean.extract(iris.Constraint(air_pressure=1000)).data
-        linreg_ln = stats.linregress(TOsfc,Tplv)
-        SthAmhold[0,np] = linreg_ln[0]
-        linreg_ln = stats.linregress(Tsfc,Tplv)
-        SthAmhold[1,np] = linreg_ln[0]
-
-        Tplv = Tplv_NthAfr_armean.extract(iris.Constraint(air_pressure=p.points[0])).data
-        Tsfc = Tplv_NthAfr_armean.extract(iris.Constraint(air_pressure=1000)).data
-        linreg_ln = stats.linregress(TOsfc,Tplv)
-        NthAfrhold[0,np] = linreg_ln[0]
-        linreg_ln = stats.linregress(Tsfc,Tplv)
-        NthAfrhold[1,np] = linreg_ln[0]
-
-        Tplv = Tplv_CntAfr_armean.extract(iris.Constraint(air_pressure=p.points[0])).data
-        Tsfc = Tplv_CntAfr_armean.extract(iris.Constraint(air_pressure=1000)).data
-        linreg_ln = stats.linregress(TOsfc,Tplv)
-        CntAfrhold[0,np] = linreg_ln[0]
-        linreg_ln = stats.linregress(Tsfc,Tplv)
-        CntAfrhold[1,np] = linreg_ln[0]
-
-        Tplv = Tplv_Aus_armean.extract(iris.Constraint(air_pressure=p.points[0])).data
-        Tsfc = Tplv_Aus_armean.extract(iris.Constraint(air_pressure=1000)).data
-        linreg_ln = stats.linregress(TOsfc,Tplv)
-        Aushold[0,np] = linreg_ln[0]
-        linreg_ln = stats.linregress(Tsfc,Tplv)
-        Aushold[1,np] = linreg_ln[0]
-
 pressure = temp_plv.coord('air_pressure').points
+
+def jet(i,nloops):
+    N_jet = plt.cm.jet.N
+    colornum = plt.cm.jet((N_jet*i/(nloops-1)))
+    return colornum
+
+plt.ion()
 plt.clf()
-plt.plot(NthAfrhold[0],pressure,'g')#linestyle='--',color=wetdry(k,nloops))
-plt.plot(CntAfrhold[0],pressure,'b')#linestyle='--',color=wetdry(k,nloops))
-plt.plot(SthAmhold[0],pressure,'r')#linestyle='--',color=wetdry(k,nloops))
-plt.plot(Aushold[0],pressure,'k')#linestyle='--',color=wetdry(k,nloops))
-plt.plot(TrTochold,pressure,'c')#linestyle='--',color=wetdry(k,nloops))
-plt.plot(NthAfrhold[1],pressure,'--g')#linestyle='--',color=wetdry(k,nloops))
-plt.plot(CntAfrhold[1],pressure,'--b')#linestyle='--',color=wetdry(k,nloops))
-plt.plot(SthAmhold[1],pressure,'--r')#linestyle='--',color=wetdry(k,nloops))
-plt.plot(Aushold[1],pressure,'--k')#linestyle='--',color=wetdry(k,nloops))
-#plt.plot(lnochold,pressure,'b')#color=wetdry(k,nloops))
-plt.legend(('NthAfr','Central Africa','Sth America','Australia','Tropical Ocean'),loc=3, )
-plt.title('Regression with surface temp and temp profile.') 
-plt.xlim(-0.5,3.0)
+il = 0
+for pn, p in enumerate(temp_plv.coord('air_pressure')): 
+    Tplv = Tocean_trop_mean.extract(iris.Constraint(air_pressure=p.points[0])).data
+    TOsfc = Tocean_trop_mean.extract(iris.Constraint(air_pressure=1000)).data
+    linreg_ln = stats.linregress(TOsfc,Tplv)
+    TrTochold[pn] = linreg_ln[0]
+lat_range = np.linspace(0,45,n_bands).astype(int)
+for lat in xrange(0,40,40/n_bands):
+    Tplv_NH = Tland.extract(iris.Constraint(longitude = lambda z: (0 <= z <= 360), latitude = lambda l: (lat <= l <= lat+5)))
+    Tplv_SH = Tland.extract(iris.Constraint(latitude = lambda l: (-lat-5 <= l <= -lat)))
+    Tplv_NHmean = Tplv_NH.collapsed(['latitude', 'longitude'],
+                           iris.analysis.MEAN,
+                           weights=iris.analysis.cartography.area_weights(Tplv_NH))
+    Tplv_SHmean = Tplv_SH.collapsed(['latitude', 'longitude'],
+                           iris.analysis.MEAN,
+                           weights=iris.analysis.cartography.area_weights(Tplv_SH))
+    
+    for pn, p in enumerate(temp_plv.coord('air_pressure')): 
+
+        TplvNH = Tplv_NHmean.extract(iris.Constraint(air_pressure=p.points[0])).data
+        TplvSH = Tplv_SHmean.extract(iris.Constraint(air_pressure=p.points[0])).data
+        TsfcNH = Tplv_NHmean.extract(iris.Constraint(air_pressure=1000)).data
+        TsfcSH = Tplv_SHmean.extract(iris.Constraint(air_pressure=1000)).data
+        TOsfc = Tocean_trop_mean.extract(iris.Constraint(air_pressure=1000)).data
+        linreg_lnNH = stats.linregress(TsfcNH,TplvNH)
+        linreg_lnSH = stats.linregress(TsfcSH,TplvSH)
+        reghold[0,il,pn] = linreg_lnNH[0]
+        reghold[1,il,pn] = linreg_lnSH[0]
+        #linreg_ln = stats.linregress(Tsfc,Tplv)
+        #SthAmhold[1,pn] = linreg_ln[0]
+
+    plt.plot(reghold[0,il],pressure,color=jet(il,n_bands))
+    #plt.plot(reghold[1,il],pressure,'--',color=jet(il,n_bands))
+    il = il + 1
+plt.legend((lat_range.astype(str)),loc=0)
+#plt.title('Regression with surface temp and temp profile.') 
+plt.xlim(-0.5,1.5)
 plt.ylabel('z [hPa]')
 plt.xlabel('Regresion coeff.')
 plt.gca().invert_yaxis()

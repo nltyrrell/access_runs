@@ -35,6 +35,9 @@ cor_T_sfc_Precip = iris.load_cube(ncfile_path + 'cor.4ysl.T_sfc.Precip.nc')
 plt.close('all')
 plt.figure(1)
 qplt.pcmeshclf(reg_T_sfc_T_tropo,vmin=-1,vmax=1,cmap=mc.jetwhite())
+
+sys.exit('exitttt')
+
 plt.savefig('figures/reg_T_sfc_T_tropo.png')
 plt.figure(2)
 qplt.pcmeshclf(reg_T_sfc_RH_sfc,vmin=-6,vmax=6,cmap=mc.jetwhite())
